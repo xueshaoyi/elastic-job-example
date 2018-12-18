@@ -36,6 +36,21 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
     public List<Foo> fetchData(final ShardingContext shardingContext) {
         System.out.println(String.format("Item: %s | Time: %s | Thread: %s | %s",
                 shardingContext.getShardingItem(), new SimpleDateFormat("HH:mm:ss").format(new Date()), Thread.currentThread().getId(), "DATAFLOW FETCH"));
+
+        try {
+            if (shardingContext.getShardingItem() == 0) {
+                Thread.sleep(1000);
+                System.out.println("tem: "+shardingContext.getShardingItem()+" Use time 100， " + shardingContext.getShardingParameter());
+            } else if (shardingContext.getShardingItem() == 1) {
+                Thread.sleep(5000);
+                System.out.println("tem: "+shardingContext.getShardingItem()+" Use time 5000， " + shardingContext.getShardingParameter());
+            } else {
+                Thread.sleep(10000);
+                System.out.println("tem: "+shardingContext.getShardingItem()+" Use time 10000， " + shardingContext.getShardingParameter());
+            }
+        } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         return fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
     }
     
@@ -43,6 +58,14 @@ public class SpringDataflowJob implements DataflowJob<Foo> {
     public void processData(final ShardingContext shardingContext, final List<Foo> data) {
         System.out.println(String.format("Item: %s | Time: %s | Thread: %s | %s",
                 shardingContext.getShardingItem(), new SimpleDateFormat("HH:mm:ss").format(new Date()), Thread.currentThread().getId(), "DATAFLOW PROCESS"));
+
+        if (shardingContext.getShardingItem() == 0) {
+            System.out.println("tem: "+shardingContext.getShardingItem()+" Foo is " + data.get(0).toString());
+        } else if (shardingContext.getShardingItem() == 1) {
+            System.out.println("tem: "+shardingContext.getShardingItem()+" Foo is " + data.get(0).toString());
+        } else {
+            System.out.println("tem: "+shardingContext.getShardingItem()+" Foo is " + data.get(0).toString());
+        }
         for (Foo each : data) {
             fooRepository.setCompleted(each.getId());
         }

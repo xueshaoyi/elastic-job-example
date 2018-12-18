@@ -22,6 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class SpringBootMain {
+
     
     // CHECKSTYLE:OFF
     public static void main(final String[] args) {
