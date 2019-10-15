@@ -1,14 +1,18 @@
+server:
+  port: 8080
+
 regCenter:
-  serverList: 10.2.3.41:2181
+  serverList: 127.0.0.1:2181
   namespace: elastic-job-lite-springboot
 
 simpleJob:
-  cron: 0/5 * 4 * * ?
-  shardingTotalCount: 3
+  cron: 20 * 18 * * ?
+  shardingTotalCount: 1
   shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
+  jobShardingStrategyClass: com.dangdang.ddframe.job.lite.api.strategy.impl.RotateServerByNameJobShardingStrategy
   
 dataflowJob:
-  cron: 0/10 * * * * ?
+  cron: 0 27 4 * * ?
   shardingTotalCount: 3
   shardingItemParameters: 0=Beijing,1=Shanghai,2=Guangzhou
 

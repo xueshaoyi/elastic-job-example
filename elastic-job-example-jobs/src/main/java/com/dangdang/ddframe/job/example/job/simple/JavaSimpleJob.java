@@ -33,11 +33,12 @@ public class JavaSimpleJob implements SimpleJob {
     
     @Override
     public void execute(final ShardingContext shardingContext) {
-        System.out.println(String.format("Item: %s | Time: %s | Thread: %s | %s",
-                shardingContext.getShardingItem(), new SimpleDateFormat("HH:mm:ss").format(new Date()), Thread.currentThread().getId(), "SIMPLE"));
-        List<Foo> data = fooRepository.findTodoData(shardingContext.getShardingParameter(), 10);
-        for (Foo each : data) {
-            fooRepository.setCompleted(each.getId());
+        System.out.println(shardingContext.getJobName() + "new SimpleJob run " + shardingContext.getShardingParameter());
+        try {
+            Thread.sleep(10000L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+        System.out.println(shardingContext.getJobName() + "sleep over");
     }
 }
