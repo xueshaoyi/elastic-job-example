@@ -22,15 +22,19 @@ import com.dangdang.ddframe.job.api.simple.SimpleJob;
 import com.dangdang.ddframe.job.example.fixture.entity.Foo;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepository;
 import com.dangdang.ddframe.job.example.fixture.repository.FooRepositoryFactory;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import org.apache.curator.framework.CuratorFramework;
+import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+
 public class JavaSimpleJob implements SimpleJob {
     
-    private FooRepository fooRepository = FooRepositoryFactory.getFooRepository();
-    
+
+
     @Override
     public void execute(final ShardingContext shardingContext) {
         System.out.println(shardingContext.getJobName() + "new SimpleJob run " + shardingContext.getShardingParameter());

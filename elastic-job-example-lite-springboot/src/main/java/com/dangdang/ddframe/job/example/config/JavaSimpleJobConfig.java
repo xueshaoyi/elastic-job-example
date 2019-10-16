@@ -23,52 +23,39 @@ import com.dangdang.ddframe.job.config.simple.SimpleJobConfiguration;
 import com.dangdang.ddframe.job.event.JobEventConfiguration;
 import com.dangdang.ddframe.job.example.job.simple.JavaSimpleJob;
 import com.dangdang.ddframe.job.example.job.simple.SpringSimpleJob;
-import com.dangdang.ddframe.job.example.listener.JobNameListenerManager;
 import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import com.dangdang.ddframe.job.lite.config.LiteJobConfiguration;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobRegistry;
-import com.dangdang.ddframe.job.lite.internal.schedule.JobScheduleController;
-import com.dangdang.ddframe.job.lite.internal.schedule.SchedulerFacade;
 import com.dangdang.ddframe.job.lite.spring.api.SpringJobScheduler;
 import com.dangdang.ddframe.job.reg.zookeeper.ZookeeperRegistryCenter;
-import jdk.nashorn.internal.objects.annotations.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 @Configuration
-public class SimpleJobConfig {
-
+public class JavaSimpleJobConfig {
+    
     @Resource
     private ZookeeperRegistryCenter regCenter;
-
+    
     @Resource
     private JobEventConfiguration jobEventConfiguration;
 
     @Bean
-    public SimpleJob simpleJob() {
-        return new SpringSimpleJob();
+    public JavaSimpleJob simpleJob() {
+        return new JavaSimpleJob();
     }
-
+    
     @Bean(initMethod = "init")
-    public JobScheduler simpleJobScheduler(final SimpleJob simpleJob, @Value("${simpleJob.cron}") final String cron, @Value("${simpleJob.shardingTotalCount}") final int shardingTotalCount,
-                                           @Value("${simpleJob.shardingItemParameters}") final String shardingItemParameters) {
+    public JobScheduler simpleJobScheduler(final JavaSimpleJob simpleJob, @Value("${javaJob.cron}") final String cron, @Value("${javaJob.shardingTotalCount}") final int shardingTotalCount,
+                                           @Value("${javaJob.shardingItemParameters}") final String shardingItemParameters) {
         LiteJobConfiguration liteJobConfiguration = getLiteJobConfiguration(simpleJob.getClass(), cron, shardingTotalCount, shardingItemParameters);
-        JobScheduler job = new SpringJobScheduler(simpleJob, regCenter, liteJobConfiguration, jobEventConfiguration);
-        return job;
+//        initTest(simpleJob, cron, shardingTotalCount, shardingItemParameters);
+        return new SpringJobScheduler(simpleJob, regCenter, liteJobConfiguration, jobEventConfiguration);
     }
 
-
-    @Bean(initMethod = "start")
-    public JobNameListenerManager startListener() {
-        JobNameListenerManager manager = new JobNameListenerManager(regCenter, simpleJob().getClass().getName());
-        return  manager;
-    }
-
-
+    
     private LiteJobConfiguration getLiteJobConfiguration(final Class<? extends SimpleJob> jobClass, final String cron, final int shardingTotalCount, final String shardingItemParameters) {
         return LiteJobConfiguration.newBuilder(new SimpleJobConfiguration(JobCoreConfiguration.newBuilder(
                 jobClass.getName(), cron, shardingTotalCount).shardingItemParameters(shardingItemParameters).build(), jobClass.getCanonicalName())).overwrite(true).build();

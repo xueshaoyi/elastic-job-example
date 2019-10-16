@@ -43,7 +43,7 @@ public class DataflowJobConfig {
     
     @Bean
     public DataflowJob dataflowJob() {
-        return new SpringDataflowJob(); 
+        return new SpringDataflowJob();
     }
     
     @Bean(initMethod = "init")
